@@ -31,7 +31,7 @@ import { FaRegCircleUser } from "react-icons/fa6";
 import io from "socket.io-client";
 import { IoSend } from "react-icons/io5";
 import { IoIosSend } from "react-icons/io";
-const ENDPOINT = "http://localhost:5000";
+const ENDPOINT = "https://chat-app-ar58.onrender.com";
 var socket, selectedChatCompare;
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
