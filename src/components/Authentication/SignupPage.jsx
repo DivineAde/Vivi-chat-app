@@ -49,7 +49,7 @@ const SignupPage = ({ onSwitch }) => {
         },
       };
       const { data } = await axios.post(
-        "/api/user",
+        "https://chat-app-ar58.onrender.com/user",
         {
           name,
           email,
