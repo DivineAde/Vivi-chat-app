@@ -20,7 +20,7 @@ import axios from "axios";
 import { useState } from "react";
 import { ChatState } from "../../Context/ChatProvider";
 import UserBadgeItem from "../userAvatar/UserBadgeItem";
-import UserListItem from "../UserAvatar/UserListItem";
+import UserListItem from "../userAvatar/UserListItem";
 import { CiVideoOn } from "react-icons/ci";
 import { PiDotsThreeOutlineVerticalLight, PiPhoneLight } from "react-icons/pi";
 
