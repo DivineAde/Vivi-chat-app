@@ -53,7 +53,7 @@ const LoginPage = ({ onSwitch }) => {
       };
 
       const { data } = await axios.post(
-        "/api/user/login",
+        "https://chat-app-ar58.onrender.com/api/user/login",
         { email, password },
         config
       );
