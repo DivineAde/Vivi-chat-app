@@ -87,7 +87,7 @@ const LoginPage = ({ onSwitch }) => {
       <div className="grid md:grid-cols-2 items-center gap-8 h-full">
         <div className="max-md:order-1 p-4">
           <img
-            src="src/assets/Sign up-cuate.png"
+            src="https://plus.unsplash.com/premium_vector-1720649830200-31a01d93570e?q=80&w=580&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
             className="lg:max-w-[80%] w-full h-full object-contain block mx-auto"
             alt="login-image"
           />
