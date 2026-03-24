@@ -31,7 +31,7 @@ import { FaRegCircleUser } from "react-icons/fa6";
 import io from "socket.io-client";
 import { IoSend } from "react-icons/io5";
 import { IoIosSend } from "react-icons/io";
-const ENDPOINT = "https://chat-app-ar58.onrender.com";
+const ENDPOINT = import.meta.env.VITE_API_URL;
 var socket, selectedChatCompare;
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
@@ -67,7 +67,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         };
         setNewMessage("");
         const { data } = await axios.post(
-          "/api/message",
+          `${import.meta.env.VITE_API_URL}/api/message`,
           {
             content: newMessage,
             chatId: selectedChat,
@@ -123,7 +123,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       setLoading(true);
 
       const { data } = await axios.get(
-        `/api/message/${selectedChat._id}`,
+        `${import.meta.env.VITE_API_URL}/api/message/${selectedChat._id}`,
         config
       );
       console.log(messages);

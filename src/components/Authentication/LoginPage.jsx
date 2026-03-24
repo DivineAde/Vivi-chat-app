@@ -53,7 +53,7 @@ const LoginPage = ({ onSwitch }) => {
       };
 
       const { data } = await axios.post(
-        "https://chat-app-ar58.onrender.com/api/user/login",
+        `${import.meta.env.VITE_API_URL}/api/user/login`,
         { email, password },
         config
       );
@@ -84,13 +84,13 @@ const LoginPage = ({ onSwitch }) => {
 
   return (
     <div className="bg-gray-900 text-[#333] md:h-screen">
-      <div className="grid md:grid-cols-2 items-center gap-8 h-full">
-        <div className="max-md:order-1 p-4">
+      <div className="grid md:grid-cols-[1.5fr_1fr] items-center h-full">
+        <div className="relative h-full">
           <img
-            src="https://plus.unsplash.com/premium_vector-1720649830200-31a01d93570e?q=80&w=580&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-            className="lg:max-w-[80%] w-full h-full object-contain block mx-auto"
-            alt="login-image"
+            src="/volodymyr-hryshchenko-V5vqWC9gyEU-unsplash.jpg"
+            className="w-full h-full object-cover"
           />
+          <div className="absolute inset-0 bg-black/40" />
         </div>
         <div className="flex items-center md:p-8 p-6 bg-white h-full">
           <form onSubmit={handleSubmit} className="max-w-lg w-full mx-auto">

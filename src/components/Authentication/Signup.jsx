@@ -51,7 +51,7 @@ const Signup = () => {
         },
       };
       const { data } = await axios.post(
-        "https://chat-app-ar58.onrender.com/api/user",
+        `${import.meta.env.VITE_API_URL}/api/user`,
         {
           name,
           email,
