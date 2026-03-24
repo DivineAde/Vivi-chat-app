@@ -79,51 +79,14 @@ const SignupPage = ({ onSwitch }) => {
   const strengthColor = ["", "bg-red-400", "bg-yellow-400", "bg-green-400"][strength];
 
   return (
-    <div className="min-h-screen w-full flex bg-[#0f1620]">
-      {/* ── LEFT: Branding panel ── */}
-      <div className="hidden lg:flex flex-col justify-between w-[55%] relative overflow-hidden p-12">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#1a2e44] via-[#0f1e30] to-[#0a1525]" />
-        <div className="absolute top-[-80px] right-[-80px] w-72 h-72 rounded-full bg-blue-500/10 blur-3xl" />
-        <div className="absolute bottom-[-60px] left-[-60px] w-64 h-64 rounded-full bg-blue-400/10 blur-3xl" />
-
-        {/* Logo */}
-        <div className="relative flex items-center gap-3 z-10">
-          <div className="w-10 h-10 rounded-xl bg-blue-500 flex items-center justify-center shadow-lg shadow-blue-500/30">
-            <FaMessage size={18} color="white" />
-          </div>
-          <span className="text-white font-bold text-xl tracking-wide">Divine Chat</span>
-        </div>
-
-        {/* Features */}
-        <div className="relative z-10">
-          <h1 className="text-4xl font-extrabold text-white leading-tight mb-4">
-            Join thousands of people<br />
-            <span className="text-blue-400">already chatting.</span>
-          </h1>
-          <div className="space-y-4 mt-8">
-            {[
-              { icon: "💬", title: "Real-time messaging", desc: "Instant delivery with read receipts" },
-              { icon: "👥", title: "Group chats", desc: "Create groups for teams or friends" },
-              { icon: "🔒", title: "Secure & private", desc: "Your conversations stay yours" },
-            ].map((f) => (
-              <div key={f.title} className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-lg shrink-0">
-                  {f.icon}
-                </div>
-                <div>
-                  <p className="text-white font-semibold text-sm">{f.title}</p>
-                  <p className="text-blue-200/50 text-xs mt-0.5">{f.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="relative z-10 flex items-center gap-2 text-white/30 text-xs">
-          <span>© 2026 Divine Chat</span>
-          <span>·</span>
-          <span>End-to-end encrypted</span>
-        </div>
+    <div className="h-screen w-full flex bg-[#0f1620]">
+       {/* ── LEFT: Branding panel ── */}
+      <div className="hidden lg:block w-[55%] h-full">
+        <img
+          src="/volodymyr-hryshchenko-V5vqWC9gyEU-unsplash.jpg"
+          alt="auth visual"
+          className="w-full h-full object-cover"
+        />
       </div>
 
       {/* ── RIGHT: Signup form ── */}
