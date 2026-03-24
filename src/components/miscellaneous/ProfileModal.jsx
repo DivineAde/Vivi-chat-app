@@ -1,72 +1,58 @@
-import { ViewIcon } from "@chakra-ui/icons";
 import {
-  Button,
-  IconButton,
-  Text,
-  useDisclosure,
-  Image,
-  Box,
+  Modal, ModalOverlay, ModalContent, ModalHeader,
+  ModalBody, ModalCloseButton, Image, Button, useDisclosure, Avatar,
 } from "@chakra-ui/react";
-import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-} from "@chakra-ui/react";
-import React from "react";
-import { PiDotsThreeOutlineVerticalLight, PiPhoneLight } from "react-icons/pi";
 import { CiVideoOn } from "react-icons/ci";
+import { PiDotsThreeOutlineVerticalLight, PiPhoneLight } from "react-icons/pi";
 
 const ProfileModal = ({ user, children }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+
   return (
     <>
       {children ? (
         <span onClick={onOpen}>{children}</span>
       ) : (
-        <Box display={"flex"} alignItems={"center"} gap={"2px"}>
-          <CiVideoOn size={22} />
-          <PiPhoneLight size={22} />
-          <PiDotsThreeOutlineVerticalLight  size={22}
-            className="flex cursor-pointer"
-            onClick={onOpen} />
-        </Box>
+        <div className="flex items-center gap-1.5 text-gray-500">
+          <button className="p-1.5 rounded-full hover:bg-gray-100 transition-colors">
+            <CiVideoOn size={20} />
+          </button>
+          <button className="p-1.5 rounded-full hover:bg-gray-100 transition-colors">
+            <PiPhoneLight size={20} />
+          </button>
+          <button className="p-1.5 rounded-full hover:bg-gray-100 transition-colors" onClick={onOpen}>
+            <PiDotsThreeOutlineVerticalLight size={20} />
+          </button>
+        </div>
       )}
 
-      <Modal size="md" onClose={onClose} isOpen={isOpen} isCentered>
-        <ModalOverlay />
-        <ModalContent h="410px">
-          <ModalHeader lineHeight={1.1} fontSize={{ base: '2xl', sm: '3xl' }}>My profile</ModalHeader>
+      <Modal size="sm" onClose={onClose} isOpen={isOpen} isCentered>
+        <ModalOverlay backdropFilter="blur(4px)" bg="blackAlpha.400" />
+        <ModalContent rounded="2xl" shadow="2xl" border="none">
+          <ModalHeader fontSize="md" fontWeight="600">Profile</ModalHeader>
           <ModalCloseButton />
-          <ModalBody
-            display="flex"
-            flexDir="column"
-            alignItems="center"
-            justifyContent=""
-          >
-            <Image
-              borderRadius="full"
-              boxSize="150px"
-              src={user.pic}
-              alt={user.name}
-            />
-            <Text fontWeight={"medium"}>{user.name}</Text>
-            <Text fontWeight={"semibold"} fontSize={{ base: "20px", md: "22px" }}>
-              {user.email}
-            </Text>
+          <ModalBody pb={6}>
+            <div className="flex flex-col items-center gap-3">
+              <div className="relative">
+                <Avatar size="2xl" name={user?.name} src={user?.pic} shadow="lg" />
+                <span className="absolute bottom-1 right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white" />
+              </div>
+              <div className="text-center">
+                <p className="text-lg font-semibold text-gray-800">{user?.name}</p>
+                <p className="text-sm text-gray-500 mt-0.5">{user?.email}</p>
+              </div>
+              <Button
+                onClick={onClose}
+                colorScheme="blue"
+                rounded="xl"
+                size="sm"
+                w="full"
+                mt={2}
+              >
+                Close
+              </Button>
+            </div>
           </ModalBody>
-
-          <ModalFooter>
-            <Button colorScheme="blackAlpha" variant='outline' borderRadius={"lg"} mr={3} onClick={onClose}>
-             close
-            </Button>
-            <Button colorScheme="black" variant='outline' boxShadow='base' rounded={"lg"} mr={3} onClick={onClose}>
-              save
-            </Button>
-          </ModalFooter>
         </ModalContent>
       </Modal>
     </>

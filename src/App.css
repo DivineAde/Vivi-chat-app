@@ -1,23 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
-
+/* App-level font & body reset — detailed styles live in index.css */
 body {
-  font-family: "Inter", sans-serif;
-}
-
-.App {
-  background-color: transparent;
-}
-
-
-::-webkit-scrollbar {
-  width: 0px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgba(136, 136, 136, 0.281);
-}
-
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-  background: #555;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
 }

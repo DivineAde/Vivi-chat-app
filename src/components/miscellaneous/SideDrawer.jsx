@@ -1,21 +1,11 @@
-import { Box, Text } from "@chakra-ui/layout";
+import React, { useState } from "react";
 import {
   Avatar,
   AvatarBadge,
   Button,
-  Drawer,
-  DrawerBody,
-  DrawerCloseButton,
-  DrawerContent,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerOverlay,
-  FormControl,
-  FormLabel,
   Input,
   InputGroup,
   InputLeftElement,
-  InputRightElement,
   Menu,
   MenuButton,
   MenuDivider,
@@ -28,11 +18,11 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Tooltip,
+  Spinner,
   useToast,
+  Badge,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
-import { BellIcon, ChevronDownIcon, PhoneIcon } from "@chakra-ui/icons";
+import { BellIcon, ChevronDownIcon } from "@chakra-ui/icons";
 import { CiSearch } from "react-icons/ci";
 import { ChatState } from "../../Context/ChatProvider";
 import ProfileModal from "./ProfileModal";
@@ -40,219 +30,174 @@ import { useHistory } from "react-router-dom";
 import { useDisclosure } from "@chakra-ui/hooks";
 import { FaMessage } from "react-icons/fa6";
 import axios from "axios";
+import ChatLoading from "../ChatLoading";
+import UserListItem from "../userAvatar/UserListItem";
 
 const SideDrawer = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const initialRef = React.useRef(null);
-  const finalRef = React.useRef(null);
-  const { user, setSelectedChat, chats, setChats } = ChatState();
-  const [loggedUser, setLoggedUser] = useState();
-  const history = useHistory();
-  const [show, setShow] = React.useState(false);
-  const handleClick = () => setShow(!show);
-
-  const logoutHandler = () => {
-    localStorage.removeItem("userInfo");
-    setLoggedUser(null);
-    setChats([]); // Clear the chats
-    setSelectedChat(null);
-    history.push("/"); // For React Router v5
-  };
-
+  const { user, setSelectedChat, chats, setChats, notification, setNotification } = ChatState();
   const [search, setSearch] = useState("");
   const [searchResult, setSearchResult] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loadingChat, setLoadingChat] = useState(false);
-
+  const history = useHistory();
   const toast = useToast();
+
+  const logoutHandler = () => {
+    localStorage.removeItem("userInfo");
+    setChats([]);
+    setSelectedChat(null);
+    history.push("/");
+  };
 
   const handleSearch = async () => {
     if (!search) {
-      toast({
-        title: "Please Enter something in search",
-        status: "warning",
-        duration: 5000,
-        isClosable: true,
-        position: "top",
-      });
+      toast({ title: "Please enter something to search", status: "warning", duration: 3000, isClosable: true, position: "top" });
       return;
     }
-
     try {
       setLoading(true);
-
-      const config = {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-      };
-
-      const { data } = await axios.get(`/api/user?search=${search}`, config);
-
+      const config = { headers: { Authorization: `Bearer ${user.token}` } };
+      const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/api/user?search=${search}`, config);
       setLoading(false);
       setSearchResult(data);
-    } catch (error) {
-      toast({
-        title: "Error Occured!",
-        description: "Failed to Load the Search Results",
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-        position: "bottom-left",
-      });
+    } catch {
+      toast({ title: "Error fetching users", status: "error", duration: 3000, isClosable: true, position: "bottom-left" });
+      setLoading(false);
     }
   };
 
   const accessChat = async (userId) => {
-    console.log(userId);
-
     try {
       setLoadingChat(true);
-      const config = {
-        headers: {
-          "Content-type": "application/json",
-          Authorization: `Bearer ${user.token}`,
-        },
-      };
-      const { data } = await axios.post(`/api/chat`, { userId }, config);
-
+      const config = { headers: { "Content-type": "application/json", Authorization: `Bearer ${user.token}` } };
+      const { data } = await axios.post(`${import.meta.env.VITE_API_URL}/api/chat`, { userId }, config);
       if (!chats.find((c) => c._id === data._id)) setChats([data, ...chats]);
       setSelectedChat(data);
       setLoadingChat(false);
       onClose();
     } catch (error) {
-      toast({
-        title: "Error fetching the chat",
-        description: error.message,
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-        position: "bottom-left",
-      });
+      toast({ title: "Error fetching chat", description: error.message, status: "error", duration: 3000, isClosable: true, position: "bottom-left" });
     }
   };
+
   return (
     <>
-      <Box
-        display="flex"
-        justifyContent="space-between"
-        alignItems="center"
-        bg="white"
-        w="100%"
-        p="5px 10px 5px 10px"
-        borderWidth="1px"
-      >
-        <Box display={"flex"} alignItems={"center"}>
-          <Text color={"telegram.400"} fontSize={"md"} mr={"2"}></Text>
-          <FaMessage size={22} color="#0088cc" />
-        </Box>
+      {/* ── Top App Bar ── */}
+      <header className="flex items-center justify-between px-4 py-2 bg-[#1e2a35] shadow-md z-10 shrink-0">
+        {/* Left: brand */}
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/30">
+            <FaMessage size={16} className="text-white" />
+          </div>
+          <span className="text-white font-semibold text-lg tracking-tight">
+            Divine <span className="text-blue-400">Chat</span>
+          </span>
+        </div>
 
-        <Box display={"flex"} alignItems={"center"}>
-          <InputGroup display={{ base: "none", md: "block" }}>
-            <InputLeftElement pointerEvents="none">
-              <CiSearch size={20} color="#000" />
-            </InputLeftElement>
-            <Input
-              onClick={onOpen}
-              type="search"
-              placeholder="Search"
-              rounded={"full"}
-            />
-          </InputGroup>
-          <button onClick={onOpen} className="block md:hidden">
-            <CiSearch color="#978484" size={22} />
+        {/* Center: search trigger */}
+        <button
+          onClick={onOpen}
+          className="hidden md:flex items-center gap-2 bg-[#2a3c4e] hover:bg-[#32495e] transition-colors rounded-full px-4 py-1.5 text-sm text-gray-400"
+        >
+          <CiSearch size={16} />
+          <span>Search people…</span>
+        </button>
+
+        {/* Right: actions */}
+        <div className="flex items-center gap-1">
+          {/* search icon (mobile) */}
+          <button onClick={onOpen} className="md:hidden p-2 rounded-full hover:bg-white/10 text-gray-300">
+            <CiSearch size={20} />
           </button>
+
+          {/* Notifications */}
           <Menu>
-            <MenuButton p={1}>
-              <BellIcon color="black" fontSize="2xl" m={1} />
+            <MenuButton as="div" className="relative p-2 rounded-full hover:bg-white/10 cursor-pointer">
+              <BellIcon color="gray.300" fontSize="xl" />
+              {notification.length > 0 && (
+                <span className="absolute top-1 right-1 w-4 h-4 bg-red-500 rounded-full text-[9px] text-white flex items-center justify-center font-bold">
+                  {notification.length}
+                </span>
+              )}
             </MenuButton>
+            <MenuList bg="white" border="none" shadow="xl" rounded="xl" py={2} minW="220px">
+              {!notification.length ? (
+                <MenuItem fontSize="sm" color="gray.500" cursor="default">No new messages</MenuItem>
+              ) : (
+                notification.map((n) => (
+                  <MenuItem
+                    key={n._id}
+                    fontSize="sm"
+                    color="gray.700"
+                    onClick={() => {
+                      setSelectedChat(n.chat);
+                      setNotification(notification.filter((x) => x !== n));
+                    }}
+                  >
+                    {n.chat.isGroupChat ? `Group: ${n.chat.chatName}` : `${n.sender?.name || "Someone"}`}
+                  </MenuItem>
+                ))
+              )}
+            </MenuList>
           </Menu>
+
+          {/* Profile Menu */}
           <Menu>
-            <MenuButton as={Button} bg="white" rightIcon={<ChevronDownIcon />}>
-              <Avatar
-                size="sm"
-                cursor="pointer"
-                name={user.name}
-                src={user.pic}
-              >
-                <AvatarBadge boxSize="1.25em" bg="green.500" />
+            <MenuButton as={Button} bg="transparent" _hover={{ bg: "whiteAlpha.200" }} _active={{ bg: "whiteAlpha.300" }} px={2} rightIcon={<ChevronDownIcon color="gray.400" />}>
+              <Avatar size="sm" name={user.name} src={user.pic}>
+                <AvatarBadge boxSize="1.1em" bg="green.400" border="2px solid #1e2a35" />
               </Avatar>
             </MenuButton>
-            <MenuList>
+            <MenuList bg="white" border="none" shadow="xl" rounded="xl" py={2} minW="160px">
               <ProfileModal user={user}>
-                <MenuItem color="black">My Profile</MenuItem>
+                <MenuItem fontSize="sm" color="gray.700" _hover={{ bg: "gray.50" }}>My Profile</MenuItem>
               </ProfileModal>
-              <MenuDivider />
-              <MenuItem onClick={logoutHandler} color="black">
-                Logout
+              <MenuDivider my={1} />
+              <MenuItem fontSize="sm" color="red.500" _hover={{ bg: "red.50" }} onClick={logoutHandler}>
+                Sign Out
               </MenuItem>
             </MenuList>
           </Menu>
-        </Box>
-      </Box>
+        </div>
+      </header>
 
-      <Modal
-        initialFocusRef={initialRef}
-        finalFocusRef={finalRef}
-        size={"xl"}
-        isOpen={isOpen}
-        onClose={onClose}
-      >
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Find user</ModalHeader>
+      {/* ── Search Modal ── */}
+      <Modal isOpen={isOpen} onClose={onClose} size="md" isCentered>
+        <ModalOverlay backdropFilter="blur(4px)" bg="blackAlpha.500" />
+        <ModalContent rounded="2xl" shadow="2xl" border="none" mx={4}>
+          <ModalHeader fontSize="lg" fontWeight="600" pb={0}>Find a person</ModalHeader>
           <ModalCloseButton />
-          <ModalBody pb={6}>
-            <FormControl>
-              <FormLabel></FormLabel>
-              <Input ref={initialRef} placeholder="Search..." />
-            </FormControl>
-          </ModalBody>
-
-          <ModalFooter>
-            <Button colorScheme="blue" mr={3}>
-              Search
-            </Button>
-            <Button onClick={onClose}>Cancel</Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-
-      {/*
-      <Drawer isOpen={isOpen} placement="left" onClose={onClose}>
-        <DrawerOverlay />
-        <DrawerContent>
-          <DrawerCloseButton />
-          <DrawerHeader>Find a User</DrawerHeader>
-
-          <DrawerBody>
-            <Box display="flex" pb={2}>
+          <ModalBody pt={3} pb={4}>
+            <div className="flex gap-2">
               <Input
-                placeholder="Search by name or email"
-                mr={2}
+                placeholder="Search by name or email…"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+                rounded="xl"
+                bg="gray.50"
+                border="1.5px solid"
+                borderColor="gray.200"
+                _focus={{ borderColor: "blue.400", bg: "white" }}
               />
-              <Button onClick={handleSearch}>Go </Button>
-            </Box>
-
-            {loading ? (
-              <ChatLoading />
-            ) : (
-              searchResult?.map((user) => (
-                <UserListItem
-                  key={user._id}
-                  user={user}
-                  handleFunction={() => accessChat(user._id)}
-                />
-              ))
-            )}
-
-            {loadingChat && <Spinner ml="auto" display="flex" />}
-          </DrawerBody>
-        </DrawerContent>
-      </Drawer>
-          */}
+              <Button onClick={handleSearch} colorScheme="blue" rounded="xl" px={5} isLoading={loading}>
+                Search
+              </Button>
+            </div>
+            <div className="mt-3 space-y-1 max-h-64 overflow-y-auto">
+              {loading ? (
+                <ChatLoading />
+              ) : (
+                searchResult.map((u) => (
+                  <UserListItem key={u._id} user={u} handleFunction={() => accessChat(u._id)} />
+                ))
+              )}
+              {loadingChat && <Spinner display="flex" mx="auto" mt={3} color="blue.400" />}
+            </div>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
     </>
   );
 };
