@@ -65,10 +65,7 @@ const LoginPage = ({ onSwitch }) => {
         <div className="w-full max-w-md">
           {/* Mobile logo */}
           <div className="flex lg:hidden items-center gap-2 mb-8">
-            <div className="w-8 h-8 rounded-lg bg-blue-500 flex items-center justify-center">
-              <FaMessage size={14} color="white" />
-            </div>
-            <span className="text-gray-800 font-bold text-lg">Divine Chat</span>
+            <img src="/favicon.ico" alt="logo" className="w-10 h-10" />
           </div>
 
           <div className="mb-8">
