@@ -84,52 +84,122 @@ const SideDrawer = () => {
   return (
     <>
       {/* ── Top App Bar ── */}
-      <header className="flex items-center justify-between px-4 py-2 bg-white border-b border-gray-200 shadow-sm z-10 shrink-0">
-  {/* Left: brand */}
-  <div className="flex items-center gap-3">
-     <img src="/favicon.ico" alt="logo" className="w-10 h-10 object-contain" />
-  </div>
+     <header className="flex items-center justify-between px-4 py-2 bg-white border-b border-gray-200 shadow-sm z-10 shrink-0">
+      {/* Left: Brand / Logo */}
+      <div className="flex items-center gap-3">
+        <img 
+          src="/favicon.ico" 
+          alt="logo" 
+          className="w-10 h-10 object-contain" 
+        />
+      </div>
 
-  {/* Center: search trigger */}
-  <button
-    onClick={onOpen}
-    className="hidden md:flex items-center gap-2 bg-gray-100 hover:bg-gray-200 transition-colors rounded-full px-4 py-1.5 text-sm text-gray-500 border border-transparent focus:border-blue-400"
-  >
-    <CiSearch size={16} />
-    <span>Search people…</span>
-  </button>
+      {/* Center: Search Trigger (Desktop) */}
+      <button
+        onClick={onOpen}
+        className="hidden md:flex items-center gap-2 bg-gray-100 hover:bg-gray-200 transition-colors rounded-full px-4 py-1.5 text-sm text-gray-500 border border-transparent focus:outline-none focus:ring-2 focus:ring-blue-100"
+      >
+        <CiSearch size={18} className="text-gray-400" />
+        <span>Search people…</span>
+      </button>
 
-  {/* Right: actions */}
-  <div className="flex items-center gap-1">
-    {/* search icon (mobile) */}
-    <button onClick={onOpen} className="md:hidden p-2 rounded-full hover:bg-gray-100 text-gray-600">
-      <CiSearch size={20} />
-    </button>
+      {/* Right: Actions */}
+      <div className="flex items-center gap-1">
+        {/* Search Icon (Mobile) */}
+        <button 
+          onClick={onOpen} 
+          className="md:hidden p-2 rounded-full hover:bg-gray-100 text-gray-600 transition-colors"
+        >
+          <CiSearch size={22} />
+        </button>
 
-    {/* Notifications */}
-    <Menu>
-      <MenuButton as="div" className="relative p-2 rounded-full hover:bg-gray-100 cursor-pointer">
-        <BellIcon color="gray.600" fontSize="xl" />
-        {notification.length > 0 && (
-          <span className="absolute top-1 right-1 w-4 h-4 bg-red-500 rounded-full text-[9px] text-white flex items-center justify-center font-bold border-2 border-white">
-            {notification.length}
-          </span>
-        )}
-      </MenuButton>
-      {/* ... MenuList stays the same ... */}
-    </Menu>
+        {/* Notifications Menu */}
+        <Menu>
+          <MenuButton 
+            as="div" 
+            className="relative p-2 rounded-full hover:bg-gray-100 cursor-pointer transition-colors"
+          >
+            <BellIcon color="gray.600" fontSize="22px" />
+            {notification.length > 0 && (
+              <span className="absolute top-1 right-1 w-4 h-4 bg-red-500 rounded-full text-[9px] text-white flex items-center justify-center font-bold border-2 border-white">
+                {notification.length}
+              </span>
+            )}
+          </MenuButton>
+          <MenuList 
+            bg="white" 
+            border="1px solid" 
+            borderColor="gray.200" 
+            shadow="xl" 
+            rounded="xl" 
+            py={2} 
+            minW="240px"
+          >
+            {!notification.length ? (
+              <MenuItem fontSize="sm" color="gray.500" cursor="default" _hover={{ bg: "transparent" }}>
+                No new messages
+              </MenuItem>
+            ) : (
+              notification.map((n) => (
+                <MenuItem
+                  key={n._id}
+                  fontSize="sm"
+                  color="gray.700"
+                  _hover={{ bg: "gray.50" }}
+                  onClick={() => {
+                    setSelectedChat(n.chat);
+                    setNotification(notification.filter((x) => x !== n));
+                  }}
+                >
+                  {n.chat.isGroupChat 
+                    ? `Group: ${n.chat.chatName}` 
+                    : `New message from ${n.sender?.name || "Someone"}`}
+                </MenuItem>
+              ))
+            )}
+          </MenuList>
+        </Menu>
 
-    {/* Profile Menu */}
-    <Menu>
-      <MenuButton as={Button} variant="ghost" _hover={{ bg: "gray.100" }} px={2} rightIcon={<ChevronDownIcon color="gray.500" />}>
-        <Avatar size="sm" name={user.name} src={user.pic}>
-          <AvatarBadge boxSize="1.1em" bg="green.400" border="2px solid white" />
-        </Avatar>
-      </MenuButton>
-      {/* ... Rest of your MenuList ... */}
-    </Menu>
-  </div>
-</header>
+        {/* Profile Menu */}
+        <Menu>
+          <MenuButton 
+            as={Button} 
+            variant="ghost" 
+            _hover={{ bg: "gray.100" }} 
+            _active={{ bg: "gray.200" }} 
+            px={2} 
+            rightIcon={<ChevronDownIcon color="gray.500" />}
+          >
+            <Avatar size="sm" name={user.name} src={user.pic}>
+              <AvatarBadge boxSize="1.1em" bg="green.400" border="2px solid white" />
+            </Avatar>
+          </MenuButton>
+          <MenuList 
+            bg="white" 
+            border="1px solid" 
+            borderColor="gray.200" 
+            shadow="xl" 
+            rounded="xl" 
+            py={2} 
+            minW="180px"
+          >
+            {/* Replace with your ProfileModal component */}
+            <MenuItem fontSize="sm" color="gray.700" _hover={{ bg: "gray.50" }}>
+              My Profile
+            </MenuItem>
+            <MenuDivider my={1} borderColor="gray.100" />
+            <MenuItem 
+              fontSize="sm" 
+              color="red.500" 
+              _hover={{ bg: "red.50" }} 
+              onClick={logoutHandler}
+            >
+              Sign Out
+            </MenuItem>
+          </MenuList>
+        </Menu>
+      </div>
+    </header>
 
       {/* ── Search Modal ── */}
       <Modal isOpen={isOpen} onClose={onClose} size="md" isCentered>
